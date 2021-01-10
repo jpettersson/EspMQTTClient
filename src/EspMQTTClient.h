@@ -29,8 +29,8 @@
 void onConnectionEstablished(); // MUST be implemented in your sketch. Called once everythings is connected (Wifi, mqtt).
 
 typedef std::function<void()> ConnectionEstablishedCallback;
-typedef std::function<void(const String &message)> MessageReceivedCallback;
-typedef std::function<void(const String &topicStr, const String &message)> MessageReceivedCallbackWithTopic;
+typedef std::function<void(byte* &message)> MessageReceivedCallback;
+typedef std::function<void(const String &topicStr, byte* &message)> MessageReceivedCallbackWithTopic;
 typedef std::function<void()> DelayedExecutionCallback;
 
 class EspMQTTClient

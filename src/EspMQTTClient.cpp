@@ -641,28 +641,28 @@ bool EspMQTTClient::mqttTopicMatch(const String &topic1, const String &topic2)
 
 void EspMQTTClient::mqttMessageReceivedCallback(char* topic, byte* payload, unsigned int length)
 {
-  // Convert the payload into a String
-  // First, We ensure that we dont bypass the maximum size of the PubSubClient library buffer that originated the payload
-  // This buffer has a maximum length of _mqttClient.getBufferSize() and the payload begin at "headerSize + topicLength + 1"
-  unsigned int strTerminationPos;
-  if (strlen(topic) + length + 9 >= _mqttClient.getBufferSize())
-  {
-    strTerminationPos = length - 1;
+  // // Convert the payload into a String
+  // // First, We ensure that we dont bypass the maximum size of the PubSubClient library buffer that originated the payload
+  // // This buffer has a maximum length of _mqttClient.getBufferSize() and the payload begin at "headerSize + topicLength + 1"
+  // unsigned int strTerminationPos;
+  // if (strlen(topic) + length + 9 >= _mqttClient.getBufferSize())
+  // {
+  //   strTerminationPos = length - 1;
 
-    if (_enableSerialLogs)
-      Serial.print("MQTT! Your message may be truncated, please set setMaxPacketSize() to a higher value.\n");
-  }
-  else
-    strTerminationPos = length;
+  //   if (_enableSerialLogs)
+  //     Serial.print("MQTT! Your message may be truncated, please set setMaxPacketSize() to a higher value.\n");
+  // }
+  // else
+  //   strTerminationPos = length;
 
-  // Second, we add the string termination code at the end of the payload and we convert it to a String object
-  payload[strTerminationPos] = '\0';
-  String payloadStr((char*)payload);
+  // // Second, we add the string termination code at the end of the payload and we convert it to a String object
+  // payload[strTerminationPos] = '\0';
+  // String payloadStr((char*)payload);
   String topicStr(topic);
 
-  // Logging
-  if (_enableSerialLogs)
-    Serial.printf("MQTT >> [%s] %s\n", topic, payloadStr.c_str());
+  // // Logging
+  // if (_enableSerialLogs)
+  //   Serial.printf("MQTT >> [%s] %s\n", topic, payloadStr.c_str());
 
   // Send the message to subscribers
   for (byte i = 0 ; i < _topicSubscriptionList.size() ; i++)
@@ -670,9 +670,9 @@ void EspMQTTClient::mqttMessageReceivedCallback(char* topic, byte* payload, unsi
     if (mqttTopicMatch(_topicSubscriptionList[i].topic, String(topic)))
     {
       if(_topicSubscriptionList[i].callback != NULL)
-        _topicSubscriptionList[i].callback(payloadStr); // Call the callback
+        _topicSubscriptionList[i].callback(payload); // Call the callback
       if(_topicSubscriptionList[i].callbackWithTopic != NULL)
-        _topicSubscriptionList[i].callbackWithTopic(topicStr, payloadStr); // Call the callback
+        _topicSubscriptionList[i].callbackWithTopic(topicStr, payload); // Call the callback
     }
   }
 }
